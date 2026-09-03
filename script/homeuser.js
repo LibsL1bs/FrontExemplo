@@ -9,11 +9,13 @@ const logoutButton = document.querySelector("#logout");
 
 titulo.textContent = `Olá, ${aluno.nome_alu || "aluno"}`;
 
+// Encerra a sessão do aluno.
 logoutButton.addEventListener("click", () => {
   localStorage.removeItem("aluno");
   window.location.href = "./loginuser.html";
 });
 
+// Busca e exibe apenas os treinos do aluno logado.
 async function carregarTreinos() {
   try {
     const resposta = await fetch(`${api}/treinos?aluno_id=${aluno.aluno_id}`);
@@ -22,7 +24,8 @@ async function carregarTreinos() {
     const treinos = await resposta.json();
 
     if (!treinos.length) {
-      listaTreinos.innerHTML = '<p class="empty">Nenhum treino cadastrado para você.</p>';
+      listaTreinos.innerHTML =
+        '<p class="empty">Nenhum treino cadastrado para você.</p>';
       return;
     }
 
@@ -38,28 +41,38 @@ async function carregarTreinos() {
               ${treino.finalizado ? "Finalizado" : "Marcar como finalizado"}
             </button>
           </article>
-        `
+        `,
       )
       .join("");
 
     document.querySelectorAll(".finalizar-btn").forEach((botao) => {
+      // Finaliza o treino no banco e avisa a área do professor.
       botao.addEventListener("click", async () => {
         const treinoId = Number(botao.dataset.id);
         const treinoAtual = treinos.find((item) => item.treino_id === treinoId);
 
         if (!treinoAtual) return;
 
+        const resposta = await fetch(`${api}/treino/${treinoId}/finalizar`, {
+          method: "PUT",
+        });
+        if (!resposta.ok) return alert("Não foi possível finalizar o treino.");
+
         treinoAtual.finalizado = true;
         botao.textContent = "Finalizado";
         botao.disabled = true;
         botao.closest(".treino").classList.add("finalizado");
-
-        alert("Treino marcado como finalizado!");
+        localStorage.setItem("treinosAtualizados", Date.now());
       });
     });
   } catch {
-    listaTreinos.innerHTML = '<p class="empty">Não foi possível carregar os treinos.</p>';
+    listaTreinos.innerHTML =
+      '<p class="empty">Não foi possível carregar os treinos.</p>';
   }
 }
 
 carregarTreinos();
+// Atualiza a tela quando um novo treino é criado em outra aba.
+window.addEventListener("storage", (event) => {
+  if (event.key === "treinosAtualizados") carregarTreinos();
+});

@@ -3,7 +3,8 @@ const professorRaw = JSON.parse(localStorage.getItem("professor") || "null");
 const professor = professorRaw
   ? {
       ...professorRaw,
-      prof_id: professorRaw.prof_id ?? professorRaw.Prof_id ?? professorRaw.profId,
+      prof_id:
+        professorRaw.prof_id ?? professorRaw.Prof_id ?? professorRaw.profId,
     }
   : null;
 
@@ -27,12 +28,22 @@ const listaExercicios = $("#listaExercicios");
 const listaSeries = $("#listaSeries");
 const listaObservacoesExercicio = $("#listaObservacoesExercicio");
 const bemVindo = $("#bemVindo");
+let alunos = [];
+
+const telefoneFormatado = (telefone = "") => {
+  const numero = telefone.replace(/\D/g, "").slice(0, 11);
+  if (numero.length < 11) return telefone || "Não informado";
+  return `(${numero.slice(0, 2)}) ${numero.slice(2, 7)}-${numero.slice(7)}`;
+};
 
 bemVindo.textContent = `Olá prof. ${professor?.nome_prof || "Professor"}`;
 
-const getTreinos = () => JSON.parse(localStorage.getItem(storageTreinos) || "[]");
-const saveTreinos = (treinos) => localStorage.setItem(storageTreinos, JSON.stringify(treinos));
+const getTreinos = () =>
+  JSON.parse(localStorage.getItem(storageTreinos) || "[]");
+const saveTreinos = (treinos) =>
+  localStorage.setItem(storageTreinos, JSON.stringify(treinos));
 
+// Busca alunos, status e último treino para a aba de alunos.
 async function carregarAlunos() {
   try {
     const [respostaAlunos, respostaProfessores] = await Promise.all([
@@ -40,22 +51,27 @@ async function carregarAlunos() {
       fetch(`${api}/professores`),
     ]);
 
-    if (!respostaAlunos.ok || !respostaProfessores.ok) throw new Error("Erro ao buscar alunos");
+    if (!respostaAlunos.ok || !respostaProfessores.ok)
+      throw new Error("Erro ao buscar alunos");
 
-    const alunos = await respostaAlunos.json();
+    alunos = await respostaAlunos.json();
     const professores = await respostaProfessores.json();
     const mapaProfessores = new Map(
-      professores.map((p) => [Number(p.prof_id), p.nome_prof])
+      professores.map((p) => [Number(p.prof_id), p.nome_prof]),
     );
 
     const options = alunos
-      .map((aluno) => `<option value="${aluno.aluno_id}">${aluno.nome_alu}</option>`)
+      .map(
+        (aluno) =>
+          `<option value="${aluno.aluno_id}">${aluno.nome_alu}</option>`,
+      )
       .join("");
 
     treinoAlunoSelect.innerHTML = `<option value="">Selecione o aluno</option>${options}`;
 
     if (!alunos.length) {
-      listaAlunos.innerHTML = '<p class="empty-state">Nenhum aluno cadastrado ainda.</p>';
+      listaAlunos.innerHTML =
+        '<p class="empty-state">Nenhum aluno cadastrado ainda.</p>';
       return;
     }
 
@@ -67,28 +83,31 @@ async function carregarAlunos() {
           mapaProfessores.get(Number(aluno.prof_id)) ||
           "Professor não vinculado";
 
-        const ativo = aluno.ativo === true || aluno.ativo === "true" || aluno.ativo === 1;
-        const ultimoTreino = aluno.ultimo_treino
-          ? new Date(aluno.ultimo_treino).toLocaleDateString("pt-BR")
-          : "Sem treino registrado";
+        const status = aluno.status_aluno;
+        const statusTexto =
+          status === null ? "Sem treino" : status ? "Ativo" : "Inativo";
+        const statusCor =
+          status === null ? "#617371" : status ? "#1f8f5f" : "#b45b35";
 
         return `
           <div class="item-card">
             <h3>${aluno.nome_alu}</h3>
             <p><strong>Professor:</strong> ${professorNome}</p>
-            <p><strong>Telefone:</strong> ${aluno.tele_alu || "Não informado"}</p>
-            <p><strong>Status:</strong> <span style="color:${ativo ? "#1f8f5f" : "#b45b35"}; font-weight:700;">${ativo ? "Ativo" : "Inativo"}</span></p>
-            <p><strong>Último treino:</strong> ${ultimoTreino}</p>
+            <p><strong>Telefone:</strong> ${telefoneFormatado(aluno.tele_alu)}</p>
+            <p><strong>Status:</strong> <span style="color:${statusCor}; font-weight:700;">${statusTexto}</span></p>
+            <p><strong>Último treino:</strong> ${aluno.ultimo_treino || "Sem treino finalizado"}</p>
           </div>
         `;
       })
       .join("");
   } catch {
-    listaAlunos.innerHTML = '<p class="empty-state">Não foi possível carregar os alunos do banco.</p>';
+    listaAlunos.innerHTML =
+      '<p class="empty-state">Não foi possível carregar os alunos do banco.</p>';
     treinoAlunoSelect.innerHTML = '<option value="">Selecione o aluno</option>';
   }
 }
 
+// Carrega sugestões de treinos e exercícios já cadastrados.
 async function carregarOpcoesTreino() {
   try {
     const [treinosResposta, exerciciosResposta] = await Promise.all([
@@ -96,24 +115,55 @@ async function carregarOpcoesTreino() {
       fetch(`${api}/exercicios`),
     ]);
 
-    if (!treinosResposta.ok || !exerciciosResposta.ok) throw new Error("Erro ao buscar opções de treino");
+    if (!treinosResposta.ok || !exerciciosResposta.ok)
+      throw new Error("Erro ao buscar opções de treino");
 
     const treinos = await treinosResposta.json();
     const exercicios = await exerciciosResposta.json();
 
-    const nomesTreino = [...new Set(treinos.map((treino) => treino.nome_trei).filter(Boolean))];
-    const tiposTreino = [...new Set(treinos.map((treino) => treino.tipo_trei).filter(Boolean))];
-    const observacoesTreino = [...new Set(treinos.map((treino) => treino.observ_trei).filter(Boolean))];
-    const nomesExercicios = [...new Set(exercicios.map((exercicio) => exercicio.nome_exer).filter(Boolean))];
-    const seriesExercicios = [...new Set(exercicios.map((exercicio) => exercicio.serie_exer).filter(Boolean))];
-    const observacoesExercicio = [...new Set(exercicios.map((exercicio) => exercicio.observ_exer).filter(Boolean))];
+    const nomesTreino = [
+      ...new Set(treinos.map((treino) => treino.nome_trei).filter(Boolean)),
+    ];
+    const tiposTreino = [
+      ...new Set(treinos.map((treino) => treino.tipo_trei).filter(Boolean)),
+    ];
+    const observacoesTreino = [
+      ...new Set(treinos.map((treino) => treino.observ_trei).filter(Boolean)),
+    ];
+    const nomesExercicios = [
+      ...new Set(
+        exercicios.map((exercicio) => exercicio.nome_exer).filter(Boolean),
+      ),
+    ];
+    const seriesExercicios = [
+      ...new Set(
+        exercicios.map((exercicio) => exercicio.serie_exer).filter(Boolean),
+      ),
+    ];
+    const observacoesExercicio = [
+      ...new Set(
+        exercicios.map((exercicio) => exercicio.observ_exer).filter(Boolean),
+      ),
+    ];
 
-    listaNomesTreino.innerHTML = nomesTreino.map((valor) => `<option value="${valor}"></option>`).join("");
-    listaTiposTreino.innerHTML = tiposTreino.map((valor) => `<option value="${valor}"></option>`).join("");
-    listaObservacoesTreino.innerHTML = observacoesTreino.map((valor) => `<option value="${valor}"></option>`).join("");
-    listaExercicios.innerHTML = nomesExercicios.map((valor) => `<option value="${valor}"></option>`).join("");
-    listaSeries.innerHTML = seriesExercicios.map((valor) => `<option value="${valor}"></option>`).join("");
-    listaObservacoesExercicio.innerHTML = observacoesExercicio.map((valor) => `<option value="${valor}"></option>`).join("");
+    listaNomesTreino.innerHTML = nomesTreino
+      .map((valor) => `<option value="${valor}"></option>`)
+      .join("");
+    listaTiposTreino.innerHTML = tiposTreino
+      .map((valor) => `<option value="${valor}"></option>`)
+      .join("");
+    listaObservacoesTreino.innerHTML = observacoesTreino
+      .map((valor) => `<option value="${valor}"></option>`)
+      .join("");
+    listaExercicios.innerHTML = nomesExercicios
+      .map((valor) => `<option value="${valor}"></option>`)
+      .join("");
+    listaSeries.innerHTML = seriesExercicios
+      .map((valor) => `<option value="${valor}"></option>`)
+      .join("");
+    listaObservacoesExercicio.innerHTML = observacoesExercicio
+      .map((valor) => `<option value="${valor}"></option>`)
+      .join("");
   } catch {
     listaNomesTreino.innerHTML = "";
     listaTiposTreino.innerHTML = "";
@@ -124,11 +174,24 @@ async function carregarOpcoesTreino() {
   }
 }
 
-function renderTreinos() {
-  const treinos = getTreinos();
+// Renderiza os treinos do professor e relaciona cada aluno ao seu nome.
+async function renderTreinos() {
+  const resposta = await fetch(`${api}/treinos?prof_id=${professor.prof_id}`);
+  const locais = getTreinos();
+  const treinos = resposta.ok
+    ? (await resposta.json()).map((treino) => ({
+        ...treino,
+        ...(locais.find((local) => local.id === treino.treino_id) || {}),
+        alunoId: treino.aluno_id,
+        exercicios:
+          locais.find((local) => local.id === treino.treino_id)?.exercicios ||
+          [],
+      }))
+    : [];
 
   if (!treinos.length) {
-    listaTreinos.innerHTML = '<p class="empty-state">Nenhum treino cadastrado ainda.</p>';
+    listaTreinos.innerHTML =
+      '<p class="empty-state">Nenhum treino cadastrado ainda.</p>';
     return;
   }
 
@@ -143,14 +206,18 @@ function renderTreinos() {
               ${exercicio.carga || "carga não informada"}
               ${exercicio.observacao ? `- ${exercicio.observacao}` : ""}
             </li>
-          `
+          `,
         )
         .join("");
 
       return `
         <div class="item-card">
           <h3>${treino.nome}</h3>
-          <p><strong>Aluno ID:</strong> ${treino.alunoId}</p>
+          <p><strong>Aluno:</strong> ${
+            alunos.find(
+              (aluno) => Number(aluno.aluno_id) === Number(treino.alunoId),
+            )?.nome_alu || treino.alunoId
+          }</p>
           <p><strong>Tipo:</strong> ${treino.tipo}</p>
           <p><strong>Data:</strong> ${treino.data}</p>
           <p><strong>Observações:</strong> ${treino.observacao || "Nenhuma"}</p>
@@ -161,6 +228,7 @@ function renderTreinos() {
     .join("");
 }
 
+// Cria uma linha editável de exercício para o formulário de treino.
 function buildExerciseRow() {
   const row = document.createElement("div");
   row.className = "exercise-row";
@@ -190,14 +258,18 @@ function buildExerciseRow() {
     </label>
   `;
 
-  row.querySelector(".remove-exercise").addEventListener("click", () => row.remove());
+  row
+    .querySelector(".remove-exercise")
+    .addEventListener("click", () => row.remove());
   return row;
 }
 
+// Adiciona uma nova linha de exercício ao formulário.
 function adicionarLinhaExercicio() {
   exerciciosTreino.appendChild(buildExerciseRow());
 }
 
+// Cadastra o aluno vinculado ao professor logado.
 formAluno.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -207,6 +279,11 @@ formAluno.addEventListener("submit", async (event) => {
 
   if (!nome || !senha) {
     alert("Informe o nome e a senha do aluno.");
+    return;
+  }
+
+  if (senha.length > 8) {
+    alert("A senha deve ter no máximo 8 caracteres.");
     return;
   }
 
@@ -222,17 +299,21 @@ formAluno.addEventListener("submit", async (event) => {
       }),
     });
 
-    if (!resposta.ok) throw new Error("Erro ao cadastrar aluno");
+    if (!resposta.ok) {
+      const erro = await resposta.json().catch(() => ({}));
+      throw new Error(erro.error || "Erro ao cadastrar aluno");
+    }
 
     formAluno.reset();
     await carregarAlunos();
     alert("Aluno cadastrado com sucesso!");
-  } catch {
-    alert("Não foi possível cadastrar o aluno.");
+  } catch (error) {
+    alert(error.message);
   }
 });
 
-formTreino.addEventListener("submit", (event) => {
+// Salva o treino no banco e mantém os detalhes dos exercícios localmente.
+formTreino.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const alunoId = Number(treinoAlunoSelect.value);
@@ -249,11 +330,17 @@ formTreino.addEventListener("submit", (event) => {
   const rows = [...document.querySelectorAll(".exercise-row")];
   const exercicios = rows
     .map((row) => {
-      const nomeExercicio = row.querySelector('[name="nomeExercicio"]').value.trim();
+      const nomeExercicio = row
+        .querySelector('[name="nomeExercicio"]')
+        .value.trim();
       const series = row.querySelector('[name="seriesExercicio"]').value.trim();
-      const repeticoes = row.querySelector('[name="repeticoesExercicio"]').value.trim();
+      const repeticoes = row
+        .querySelector('[name="repeticoesExercicio"]')
+        .value.trim();
       const carga = row.querySelector('[name="cargaExercicio"]').value.trim();
-      const obsExercicio = row.querySelector('[name="obsExercicio"]').value.trim();
+      const obsExercicio = row
+        .querySelector('[name="obsExercicio"]')
+        .value.trim();
 
       if (!nomeExercicio || !series || !repeticoes) return null;
 
@@ -272,44 +359,82 @@ formTreino.addEventListener("submit", (event) => {
     return;
   }
 
-  const treinos = getTreinos();
-  treinos.push({
-    id: Date.now(),
-    alunoId,
-    nome,
-    tipo,
-    data,
-    observacao,
-    exercicios,
-  });
+  try {
+    const resposta = await fetch(`${api}/treino`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nome_trei: nome,
+        tipo_trei: tipo,
+        data_trei: data,
+        observ_trei: observacao,
+        aluno_id: alunoId,
+        prof_id: professor.prof_id,
+        exer_id: null,
+      }),
+    });
 
-  saveTreinos(treinos);
-  formTreino.reset();
-  exerciciosTreino.innerHTML = "";
-  adicionarLinhaExercicio();
-  renderTreinos();
+    if (!resposta.ok) throw new Error("Não foi possível salvar o treino.");
+
+    const salvo = await resposta.json();
+    saveTreinos([
+      ...getTreinos(),
+      {
+        id: salvo.treino_id,
+        alunoId,
+        nome,
+        tipo,
+        data,
+        observacao,
+        exercicios,
+      },
+    ]);
+
+    formTreino.reset();
+    exerciciosTreino.innerHTML = "";
+    adicionarLinhaExercicio();
+    localStorage.setItem("treinosAtualizados", Date.now());
+    await renderTreinos();
+  } catch (error) {
+    alert(error.message);
+  }
 });
 
+// Encerra a sessão do professor.
 logoutButton.addEventListener("click", () => {
   localStorage.removeItem("professor");
   window.location.href = "./login.html";
 });
 
+// Alterna entre as abas de alunos e treinos.
 for (const button of tabButtons) {
   button.addEventListener("click", () => {
     const target = button.dataset.tab;
-    document.querySelectorAll(".tab-button").forEach((item) => item.classList.toggle("active", item === button));
-    document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.toggle("active", panel.id === `${target}Tab`));
+    document
+      .querySelectorAll(".tab-button")
+      .forEach((item) => item.classList.toggle("active", item === button));
+    document
+      .querySelectorAll(".tab-panel")
+      .forEach((panel) =>
+        panel.classList.toggle("active", panel.id === `${target}Tab`),
+      );
   });
 }
 
+// Insere exercícios adicionais no treino.
 addExercicioButton.addEventListener("click", adicionarLinhaExercicio);
 
+// Inicializa data, formulário, alunos, opções e treinos.
 async function inicializar() {
   $("#dataTreino").valueAsDate = new Date();
   adicionarLinhaExercicio();
   await Promise.all([carregarAlunos(), carregarOpcoesTreino()]);
-  renderTreinos();
+  await renderTreinos();
 }
 
 inicializar();
+window.addEventListener("storage", (event) => {
+  if (event.key !== "treinosAtualizados") return;
+  carregarAlunos();
+  renderTreinos();
+});

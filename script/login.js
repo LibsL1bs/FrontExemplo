@@ -1,5 +1,6 @@
 const api = "http://localhost:3000";
 
+// Autentica o professor e guarda seus dados para a área restrita.
 document.querySelector("#entrar").addEventListener("click", async () => {
   const nome_prof = document.querySelector("#nome_prof").value;
   const senha_prof = document.querySelector("#senha_prof").value;

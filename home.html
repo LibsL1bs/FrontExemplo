@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -17,8 +17,12 @@
       </header>
 
       <nav class="tabs" aria-label="Abas do professor">
-        <button class="tab-button active" type="button" data-tab="alunos">Alunos</button>
-        <button class="tab-button" type="button" data-tab="treinos">Treinos</button>
+        <button class="tab-button active" type="button" data-tab="alunos">
+          Alunos
+        </button>
+        <button class="tab-button" type="button" data-tab="treinos">
+          Treinos
+        </button>
       </nav>
 
       <main class="content">
@@ -28,15 +32,30 @@
             <form id="formAluno" class="form-card">
               <label>
                 Nome do aluno
-                <input id="nomeAluno" type="text" placeholder="Digite o nome" required />
+                <input
+                  id="nomeAluno"
+                  type="text"
+                  placeholder="Digite o nome"
+                  required
+                />
               </label>
               <label>
                 Senha
-                <input id="senhaAluno" type="password" placeholder="Digite a senha" required />
+                <input
+                  id="senhaAluno"
+                  type="password"
+                  maxlength="8"
+                  placeholder="Até 8 caracteres"
+                  required
+                />
               </label>
               <label>
                 Telefone
-                <input id="telefoneAluno" type="tel" placeholder="Ex: (11) 99999-9999" />
+                <input
+                  id="telefoneAluno"
+                  type="tel"
+                  placeholder="Ex: (11) 99999-9999"
+                />
               </label>
               <button class="primary-btn" type="submit">Adicionar aluno</button>
             </form>
@@ -60,11 +79,23 @@
               </label>
               <label>
                 Nome do treino
-                <input id="nomeTreino" type="text" list="listaNomesTreino" placeholder="Ex: Treino de força" required />
+                <input
+                  id="nomeTreino"
+                  type="text"
+                  list="listaNomesTreino"
+                  placeholder="Ex: Treino de força"
+                  required
+                />
               </label>
               <label>
                 Tipo
-                <input id="tipoTreino" type="text" list="listaTiposTreino" placeholder="Ex: Hipertrofia, cardio, mobilidade" required />
+                <input
+                  id="tipoTreino"
+                  type="text"
+                  list="listaTiposTreino"
+                  placeholder="Ex: Hipertrofia, cardio, mobilidade"
+                  required
+                />
               </label>
               <label>
                 Data
@@ -73,14 +104,24 @@
 
               <div class="exercise-header">
                 <strong>Exercícios</strong>
-                <button type="button" id="addExercicio" class="secondary-btn small-btn">+ Adicionar exercício</button>
+                <button
+                  type="button"
+                  id="addExercicio"
+                  class="secondary-btn small-btn"
+                >
+                  + Adicionar exercício
+                </button>
               </div>
 
               <div id="exerciciosTreino" class="exercise-list"></div>
 
               <label>
                 Observações gerais
-                <textarea id="observacaoTreino" list="listaObservacoesTreino" placeholder="Descreva orientações do treino"></textarea>
+                <textarea
+                  id="observacaoTreino"
+                  list="listaObservacoesTreino"
+                  placeholder="Descreva orientações do treino"
+                ></textarea>
               </label>
 
               <button class="primary-btn" type="submit">Salvar treino</button>

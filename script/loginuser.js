@@ -1,5 +1,6 @@
 const api = "http://localhost:3000";
 
+// Autentica o aluno e abre sua área de treinos.
 document.querySelector("form").addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -16,7 +17,8 @@ document.querySelector("form").addEventListener("submit", async (event) => {
     });
 
     if (!resposta.ok) {
-      alert("Nome ou senha incorretos");
+      const erro = await resposta.json().catch(() => ({}));
+      alert(erro.error || "Nome ou senha incorretos");
       return;
     }
 

@@ -1,34 +1,35 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login do professor</title>
-    <link rel="stylesheet" href="./css/login.css">
-</head>
-<body>
+    <link rel="stylesheet" href="./css/login.css" />
+  </head>
+  <body>
     <main>
-        <h1>Login do professor</h1>
-        <p>Acesse sua conta para continuar.</p>
-
-        <form>
-            <label for="nome_prof">
-                Nome
-                <input type="text" id="nome_prof" placeholder="Digite seu nome" required>
-            </label>
-
-            <label for="senha_prof">
-                Senha
-                <input type="password" id="senha_prof" placeholder="Digite sua senha" required>
-            </label>
-
-            <button type="button" id="entrar">Entrar</button>
-        </form>
-
-        <a href="./cadastro.html">Cadastrar professor</a>
-        <a href="./loginuser.html">É aluno? Faça login aqui</a>
+      <h1>Login do professor</h1>
+      <p>Acesse sua conta para continuar.</p>
+      <form>
+        <label for="nome_prof"
+          >Nome<input
+            id="nome_prof"
+            type="text"
+            placeholder="Digite seu nome"
+            required
+        /></label>
+        <label for="senha_prof"
+          >Senha<input
+            id="senha_prof"
+            type="password"
+            placeholder="Digite sua senha"
+            required
+        /></label>
+        <button id="entrar" type="button">Entrar</button>
+      </form>
+      <a href="./cadastro.html">Cadastrar professor</a>
+      <a href="./loginuser.html">É aluno? Faça login aqui</a>
     </main>
-
     <script src="./script/login.js"></script>
-</body>
+  </body>
 </html>

@@ -1,22 +1,21 @@
 const api = "http://localhost:3000";
+
+// Mantém compatibilidade com a antiga tela de cadastro.
 document.querySelector("#enviar").addEventListener("click", async () => {
-  const senha = document.querySelector("#senha").value;
-  const nova = document.querySelector("#Csenha").value;
-  if (nova != senha || senha == "" || nova == "") {
-    alert("as senhas precisam ser iguais");
-  } else {
-    const datas = {
-      user: document.querySelector("#nome").value,
-      password: document.querySelector("#senha").value,
-    };
-    const resposta = await fetch(`${api}/cadastro`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(datas),
-    });
-    if (resposta.status != 201) {
-     return alert("usuário ou senha incorretos");
-    }
-    window.location.href = "./login.html";
+  const nome_prof = document.querySelector("#nome").value.trim();
+  const senha_prof = document.querySelector("#senha").value.trim();
+  const confirmacao = document.querySelector("#Csenha").value.trim();
+
+  if (!nome_prof || !senha_prof || senha_prof !== confirmacao) {
+    return alert("Preencha os campos e confirme a senha.");
   }
+
+  const resposta = await fetch(`${api}/professor`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ nome_prof, senha_prof }),
+  });
+
+  if (resposta.status !== 201) return alert("Não foi possível cadastrar.");
+  window.location.href = "./login.html";
 });

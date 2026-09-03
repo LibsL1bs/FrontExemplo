@@ -1,4 +1,6 @@
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 body {
   margin: 0;
   min-height: 100vh;
@@ -28,7 +30,8 @@ h1 {
   margin: 6px 0 0;
   font-size: 32px;
 }
-#logout, .finalizar-btn {
+#logout,
+.finalizar-btn {
   border: none;
   border-radius: 8px;
   background: #236b63;
@@ -75,5 +78,43 @@ h1 {
   font-style: italic;
 }
 @media (max-width: 600px) {
-  header { flex-direction: column; align-items: flex-start; }
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+body {
+  background: #f3efe6;
+  color: #202a2a;
+}
+.container {
+  max-width: 980px;
+  margin-top: 48px;
+}
+header {
+  padding-bottom: 22px;
+  border-bottom: 2px solid #202a2a;
+}
+.eyebrow {
+  color: #d66b45;
+  font-weight: 700;
+}
+h1 {
+  font-family: Georgia, serif;
+}
+#logout {
+  border-radius: 0;
+  background: #d66b45;
+}
+.panel {
+  border-radius: 0;
+  box-shadow: 8px 8px 0 #d9e2db;
+}
+.treino {
+  border-radius: 0;
+  background: #fffdf8;
+}
+.finalizar-btn {
+  border-radius: 0;
 }

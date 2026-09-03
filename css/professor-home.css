@@ -242,3 +242,59 @@ textarea {
     align-items: stretch;
   }
 }
+
+/* Direção visual da área administrativa. */
+body {
+  background: #f3efe6;
+  color: #202a2a;
+}
+.page {
+  max-width: 1180px;
+  padding-top: 42px;
+}
+.topbar {
+  padding-bottom: 22px;
+  border-bottom: 2px solid #202a2a;
+}
+.topbar h1 {
+  font-family: Georgia, serif;
+  font-size: 2.4rem;
+}
+.topbar p {
+  margin: 8px 0 0;
+  color: #d66b45;
+  font-weight: bold;
+}
+#logout {
+  background: #d66b45;
+  border-radius: 0;
+}
+.tabs {
+  gap: 0;
+  border-bottom: 1px solid #b9c4bc;
+}
+.tab-button {
+  border-radius: 0;
+  background: transparent;
+  border-bottom: 3px solid transparent;
+}
+.tab-button.active {
+  background: transparent;
+  color: #236b63;
+  border-color: #236b63;
+}
+.panel {
+  border-radius: 0;
+  box-shadow: 7px 7px 0 #d9e2db;
+}
+.item-card {
+  border-radius: 0;
+  background: #fffdf8;
+}
+.primary-btn {
+  border-radius: 0;
+  background: #d66b45;
+}
+.secondary-btn {
+  border-radius: 0;
+}
