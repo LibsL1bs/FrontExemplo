@@ -1,29 +1,33 @@
-const api = "http://localhost:3000";
+const api = "http://localhost:3001";
 
-// Autentica o professor e guarda seus dados para a área restrita.
-document.querySelector("#entrar").addEventListener("click", async () => {
-  const nome_prof = document.querySelector("#nome_prof").value;
-  const senha_prof = document.querySelector("#senha_prof").value;
+// Autentica o funcionário e guarda seus dados para a área restrita.
+document.querySelector("form").addEventListener("submit", async (event) => {
+  event.preventDefault();
 
-  const resposta = await fetch(`${api}/professor/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ nome_prof, senha_prof }),
-  });
+  const botao = document.querySelector("#entrar");
+  const nome = document.querySelector("#nome_func").value.trim();
+  const senha = document.querySelector("#senha_func").value;
 
-  if (!resposta.ok) {
-    alert("Nome ou senha incorretos");
-    return;
+  botao.disabled = true;
+
+  try {
+    const resposta = await fetch(`${api}/funcionarios/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nome, senha }),
+    });
+
+    const resultado = await resposta.json().catch(() => ({}));
+    if (!resposta.ok) {
+      alert(resultado.mensagem || "Nome ou senha incorretos.");
+      return;
+    }
+
+    localStorage.setItem("funcionario", JSON.stringify(resultado));
+    window.location.href = "./funcionario-home.html";
+  } catch {
+    alert("Não foi possível conectar ao servidor.");
+  } finally {
+    botao.disabled = false;
   }
-
-  const professor = await resposta.json();
-  const professorNormalizado = {
-    ...professor,
-    prof_id: professor.prof_id ?? professor.Prof_id ?? professor.profId,
-  };
-
-  localStorage.setItem("professor", JSON.stringify(professorNormalizado));
-  window.location.href = "./home.html";
 });

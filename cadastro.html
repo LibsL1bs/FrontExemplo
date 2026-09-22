@@ -3,27 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cadastro do professor</title>
+    <title>Cadastro do cliente</title>
     <link rel="stylesheet" href="./css/cadastro.css" />
   </head>
   <body>
     <main>
       <h1>Cadastro</h1>
-      <p>Crie sua conta de professor.</p>
+      <p>Cadastre seus dados para acompanhar seus veículos.</p>
 
-      <form>
-        <label for="nome_prof">
+      <form id="cadastroCliente">
+        <label for="nome_cliente">
           Nome
-          <input id="nome_prof" type="text" placeholder="Digite seu nome" />
+          <input id="nome_cliente" type="text" placeholder="Digite seu nome" required />
         </label>
 
-        <label for="senha_prof">
+        <label for="cpf_cliente">
+          CPF
+          <input id="cpf_cliente" type="text" inputmode="numeric" placeholder="000.000.000-00" maxlength="14" required />
+        </label>
+
+        <label for="telefone_cliente">
+          Telefone
+          <input id="telefone_cliente" type="tel" placeholder="(00) 00000-0000" />
+        </label>
+
+        <label for="endereco_cliente">
+          Endereço
+          <input id="endereco_cliente" type="text" placeholder="Digite seu endereço" />
+        </label>
+
+        <label for="senha_cliente">
           Senha
-          <input
-            id="senha_prof"
-            type="password"
-            placeholder="Digite sua senha"
-          />
+          <input id="senha_cliente" type="password" placeholder="Digite sua senha" required />
         </label>
 
         <label for="confirmar_senha">
@@ -39,7 +50,8 @@
       </form>
 
       <div class="links">
-        <a href="./login.html">Já tenho cadastro</a>
+        <a href="./loginuser.html">Já tenho cadastro</a>
+        <a href="./login-funcionario.html">Acesso do funcionário</a>
       </div>
     </main>
 

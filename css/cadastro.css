@@ -3,43 +3,45 @@
 }
 body {
   margin: 0;
-  min-height: 100vh;
+  height: 100vh;
   display: grid;
   place-items: center;
-  padding: 24px;
+  padding: 16px;
+  overflow: hidden;
   background: #f3efe6;
   color: #202a2a;
   font-family: Georgia, serif;
 }
 main {
   width: min(100%, 410px);
-  padding: 38px 32px;
+  max-height: calc(100vh - 32px);
+  padding: 24px 28px;
   background: #fffdf8;
   border-top: 7px solid #236b63;
   box-shadow: 12px 12px 0 #d66b45;
 }
 h1 {
-  margin: 0 0 8px;
-  font-size: 34px;
+  margin: 0 0 5px;
+  font-size: 30px;
 }
 p {
-  margin: 0 0 26px;
+  margin: 0 0 16px;
   color: #65706c;
 }
 form {
   display: grid;
-  gap: 16px;
+  gap: 10px;
 }
 label {
   display: grid;
-  gap: 7px;
+  gap: 4px;
   font:
     700 14px Arial,
     sans-serif;
 }
 input {
   width: 100%;
-  padding: 13px;
+  padding: 10px;
   border: 1px solid #aab6ae;
   border-radius: 0;
   font:
@@ -51,7 +53,7 @@ input:focus {
   border-color: #236b63;
 }
 button {
-  padding: 13px;
+  padding: 11px;
   border: 0;
   border-radius: 0;
   background: #236b63;
@@ -65,7 +67,7 @@ button:hover {
   background: #174f4a;
 }
 .links {
-  margin-top: 18px;
+  margin-top: 12px;
   text-align: center;
 }
 .links a {
@@ -73,4 +75,39 @@ button:hover {
   font:
     14px Arial,
     sans-serif;
+}
+@media (min-width: 700px) {
+  main {
+    width: min(100%, 620px);
+  }
+  form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  button {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-height: 600px) {
+  body {
+    padding: 8px;
+  }
+  main {
+    max-height: calc(100vh - 16px);
+    padding: 14px 20px;
+  }
+  p {
+    margin-bottom: 10px;
+  }
+  form {
+    gap: 6px;
+  }
+  input {
+    padding: 7px 9px;
+  }
+  button {
+    padding: 8px;
+  }
+  .links {
+    margin-top: 8px;
+  }
 }

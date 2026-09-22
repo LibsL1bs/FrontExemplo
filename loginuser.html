@@ -3,31 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login do aluno</title>
+    <title>Acesso do cliente</title>
     <link rel="stylesheet" href="./css/login.css" />
   </head>
   <body>
     <main>
-      <h1>Login do aluno</h1>
-      <p>Acesse sua conta para continuar.</p>
-      <form>
-        <label for="nome_alu"
+      <h1>Acesso do cliente</h1>
+      <p>Acesse sua conta usando nome, CPF e senha.</p>
+      <form id="loginCliente">
+        <label for="nome_cliente"
           >Nome<input
-            id="nome_alu"
+            id="nome_cliente"
             type="text"
             placeholder="Digite seu nome"
             required
         /></label>
-        <label for="senha_alu"
-          >Senha<input
-            id="senha_alu"
-            type="password"
-            placeholder="Digite sua senha"
+        <label for="cpf_cliente"
+          >CPF<input
+            id="cpf_cliente"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="000.000.000-00"
+            maxlength="14"
             required
         /></label>
-        <button type="submit">Entrar</button>
+        <label for="senha_cliente"
+          >Senha<input
+            id="senha_cliente"
+            type="password"
+            placeholder="Digite sua senha"
+            autocomplete="current-password"
+            required
+        /></label>
+        <button id="entrar" type="submit">Entrar</button>
       </form>
-      <a href="./login.html">Login do professor</a>
+      <p id="mensagem" role="status" aria-live="polite"></p>
+      <a href="./cadastro.html">Ainda não tenho cadastro</a>
+      <a href="./login-funcionario.html">Acesso do funcionário</a>
     </main>
     <script src="./script/loginuser.js"></script>
   </body>

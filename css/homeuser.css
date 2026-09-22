@@ -53,6 +53,60 @@ h1 {
   display: grid;
   gap: 16px;
 }
+.intro {
+  margin: -8px 0 22px;
+  color: #617371;
+}
+#veiculoForm {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+#veiculoForm label {
+  display: grid;
+  gap: 7px;
+  color: #202a2a;
+  font-size: 14px;
+  font-weight: 700;
+}
+#veiculoForm input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #aab6ae;
+  border-radius: 0;
+  background: #fff;
+  font: 16px Arial, sans-serif;
+}
+#veiculoForm input:focus {
+  outline: 2px solid #236b63;
+  border-color: #236b63;
+}
+#cadastrarVeiculo {
+  grid-column: 1 / -1;
+  padding: 13px;
+  border: 0;
+  border-radius: 0;
+  background: #236b63;
+  color: #fff;
+  cursor: pointer;
+  font: 700 15px Arial, sans-serif;
+}
+#cadastrarVeiculo:hover {
+  background: #174f4a;
+}
+#cadastrarVeiculo:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+#mensagem {
+  grid-column: 1 / -1;
+  min-height: 20px;
+  margin: 0;
+  font: 700 14px Arial, sans-serif;
+}
+#mensagem.carregando { color: #65706c; }
+#mensagem.sucesso { color: #236b63; }
+#mensagem.erro { color: #b34d35; }
 .treino {
   border: 1px solid #dfeae8;
   border-radius: 10px;
@@ -81,6 +135,9 @@ h1 {
   header {
     flex-direction: column;
     align-items: flex-start;
+  }
+  #veiculoForm {
+    grid-template-columns: 1fr;
   }
 }
 

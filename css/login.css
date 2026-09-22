@@ -66,6 +66,26 @@ button {
 button:hover {
   background: #174f4a;
 }
+button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+#mensagem {
+  min-height: 20px;
+  margin: 18px 0 0;
+  font:
+    700 14px Arial,
+    sans-serif;
+}
+#mensagem.carregando {
+  color: #65706c;
+}
+#mensagem.sucesso {
+  color: #236b63;
+}
+#mensagem.erro {
+  color: #b34d35;
+}
 a {
   display: block;
   margin-top: 16px;

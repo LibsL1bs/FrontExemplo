@@ -1,78 +1,64 @@
-const api = "http://localhost:3000";
-const aluno = JSON.parse(localStorage.getItem("aluno") || "null");
+const api = "http://localhost:3001";
+const cliente = JSON.parse(localStorage.getItem("cliente") || "null");
+const idCliente = cliente?.id_cliente ?? cliente?.Id_cliente;
+const nomeCliente = cliente?.nome_cliente ?? cliente?.Nome_cliente;
 
-if (!aluno || !aluno.aluno_id) window.location.href = "./loginuser.html";
+if (!cliente || !idCliente) {
+  window.location.href = "./loginuser.html";
+}
 
 const titulo = document.querySelector("#titulo");
-const listaTreinos = document.querySelector("#listaTreinos");
 const logoutButton = document.querySelector("#logout");
+const formulario = document.querySelector("#veiculoForm");
+const botao = document.querySelector("#cadastrarVeiculo");
+const mensagem = document.querySelector("#mensagem");
 
-titulo.textContent = `Olá, ${aluno.nome_alu || "aluno"}`;
+titulo.textContent = `Olá, ${nomeCliente || "cliente"}`;
 
-// Encerra a sessão do aluno.
+// Encerra a sessão do cliente.
 logoutButton.addEventListener("click", () => {
-  localStorage.removeItem("aluno");
+	localStorage.removeItem("cliente");
   window.location.href = "./loginuser.html";
 });
 
-// Busca e exibe apenas os treinos do aluno logado.
-async function carregarTreinos() {
+// Cadastra um veículo vinculado ao cliente autenticado.
+formulario.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const dados = new FormData(formulario);
+  const veiculo = {
+    placa: dados.get("placa").trim().toUpperCase(),
+    marca: dados.get("marca").trim(),
+    modelo: dados.get("modelo").trim(),
+    ano: Number(dados.get("ano")),
+    cor: dados.get("cor").trim(),
+    idCliente,
+  };
+
+  botao.disabled = true;
+  mensagem.textContent = "Cadastrando veículo...";
+  mensagem.className = "carregando";
+
   try {
-    const resposta = await fetch(`${api}/treinos?aluno_id=${aluno.aluno_id}`);
-    if (!resposta.ok) throw new Error("Erro ao buscar treinos");
+    const resposta = await fetch(`${api}/veiculos`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(veiculo),
+    });
 
-    const treinos = await resposta.json();
-
-    if (!treinos.length) {
-      listaTreinos.innerHTML =
-        '<p class="empty">Nenhum treino cadastrado para você.</p>';
+    const resultado = await resposta.json().catch(() => ({}));
+    if (!resposta.ok) {
+      mensagem.textContent = resultado.mensagem || "Não foi possível cadastrar o veículo.";
+      mensagem.className = "erro";
       return;
     }
 
-    listaTreinos.innerHTML = treinos
-      .map(
-        (treino) => `
-          <article class="treino ${treino.finalizado ? "finalizado" : ""}">
-            <h3>${treino.nome_trei || "Treino"}</h3>
-            <p><strong>Tipo:</strong> ${treino.tipo_trei || "-"}</p>
-            <p><strong>Data:</strong> ${treino.data_trei ? new Date(treino.data_trei).toLocaleDateString("pt-BR") : "-"}</p>
-            <p><strong>Observações:</strong> ${treino.observ_trei || "Sem observações"}</p>
-            <button class="finalizar-btn" type="button" data-id="${treino.treino_id}">
-              ${treino.finalizado ? "Finalizado" : "Marcar como finalizado"}
-            </button>
-          </article>
-        `,
-      )
-      .join("");
-
-    document.querySelectorAll(".finalizar-btn").forEach((botao) => {
-      // Finaliza o treino no banco e avisa a área do professor.
-      botao.addEventListener("click", async () => {
-        const treinoId = Number(botao.dataset.id);
-        const treinoAtual = treinos.find((item) => item.treino_id === treinoId);
-
-        if (!treinoAtual) return;
-
-        const resposta = await fetch(`${api}/treino/${treinoId}/finalizar`, {
-          method: "PUT",
-        });
-        if (!resposta.ok) return alert("Não foi possível finalizar o treino.");
-
-        treinoAtual.finalizado = true;
-        botao.textContent = "Finalizado";
-        botao.disabled = true;
-        botao.closest(".treino").classList.add("finalizado");
-        localStorage.setItem("treinosAtualizados", Date.now());
-      });
-    });
+    mensagem.textContent = "Veículo cadastrado com sucesso.";
+    mensagem.className = "sucesso";
+    formulario.reset();
   } catch {
-    listaTreinos.innerHTML =
-      '<p class="empty">Não foi possível carregar os treinos.</p>';
+    mensagem.textContent = "Não foi possível conectar ao servidor.";
+    mensagem.className = "erro";
+  } finally {
+    botao.disabled = false;
   }
-}
-
-carregarTreinos();
-// Atualiza a tela quando um novo treino é criado em outra aba.
-window.addEventListener("storage", (event) => {
-  if (event.key === "treinosAtualizados") carregarTreinos();
 });
