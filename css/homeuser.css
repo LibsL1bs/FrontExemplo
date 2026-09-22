@@ -30,8 +30,7 @@ h1 {
   margin: 6px 0 0;
   font-size: 32px;
 }
-#logout,
-.finalizar-btn {
+#logout {
   border: none;
   border-radius: 8px;
   background: #236b63;
@@ -48,10 +47,6 @@ h1 {
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 12px 30px rgba(24, 48, 47, 0.08);
-}
-#listaTreinos {
-  display: grid;
-  gap: 16px;
 }
 .intro {
   margin: -8px 0 22px;
@@ -107,30 +102,6 @@ h1 {
 #mensagem.carregando { color: #65706c; }
 #mensagem.sucesso { color: #236b63; }
 #mensagem.erro { color: #b34d35; }
-.treino {
-  border: 1px solid #dfeae8;
-  border-radius: 10px;
-  padding: 18px;
-  background: #f9fbfb;
-}
-.treino h3 {
-  margin: 0 0 8px;
-}
-.treino p {
-  margin: 8px 0;
-}
-.finalizar-btn {
-  margin-top: 12px;
-  padding: 10px 14px;
-}
-.finalizado {
-  opacity: 0.7;
-}
-.empty {
-  margin: 0;
-  color: #617371;
-  font-style: italic;
-}
 @media (max-width: 600px) {
   header {
     flex-direction: column;
@@ -167,11 +138,4 @@ h1 {
 .panel {
   border-radius: 0;
   box-shadow: 8px 8px 0 #d9e2db;
-}
-.treino {
-  border-radius: 0;
-  background: #fffdf8;
-}
-.finalizar-btn {
-  border-radius: 0;
 }

@@ -3,146 +3,55 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Área do funcionário</title>
+    <title>Gestão da oficina</title>
     <link rel="stylesheet" href="./css/funcionario-home.css" />
   </head>
   <body>
-    <div class="page">
+    <main class="page">
       <header class="topbar">
         <div>
-            <h1>Área do funcionário</h1>
-              <p id="bemVindo">Olá funcionário.</p>
+          <span class="eyebrow">Gestão da oficina</span>
+          <h1 id="titulo">Área do funcionário</h1>
+          <p id="bemVindo">Olá, funcionário.</p>
         </div>
         <button id="logout" type="button">Sair</button>
       </header>
 
-      <nav class="tabs" aria-label="Abas do funcionário">
-        <button class="tab-button active" type="button" data-tab="alunos">
-          Alunos
-        </button>
-        <button class="tab-button" type="button" data-tab="treinos">
-          Treinos
-        </button>
-      </nav>
+      <section class="panel">
+        <h2>Veículos por cliente</h2>
+        <label for="clienteConsulta">Cliente</label>
+        <select id="clienteConsulta"></select>
+        <div id="listaVeiculos" class="list"></div>
+      </section>
 
-      <main class="content">
-        <section class="tab-panel active" id="alunosTab">
-          <div class="panel">
-            <h2>Cadastrar aluno</h2>
-            <form id="formAluno" class="form-card">
-              <label>
-                Nome do aluno
-                <input
-                  id="nomeAluno"
-                  type="text"
-                  placeholder="Digite o nome"
-                  required
-                />
-              </label>
-              <label>
-                Senha
-                <input
-                  id="senhaAluno"
-                  type="password"
-                  maxlength="8"
-                  placeholder="Até 8 caracteres"
-                  required
-                />
-              </label>
-              <label>
-                Telefone
-                <input
-                  id="telefoneAluno"
-                  type="tel"
-                  placeholder="Ex: (11) 99999-9999"
-                />
-              </label>
-              <button class="primary-btn" type="submit">Adicionar aluno</button>
-            </form>
-          </div>
+      <section class="panel">
+        <h2>Histórico de manutenções</h2>
+        <label for="veiculoHistorico">Veículo</label>
+        <select id="veiculoHistorico"></select>
+        <div id="listaHistorico" class="list"></div>
+      </section>
 
-          <div class="panel list-panel">
-            <h2>Alunos cadastrados</h2>
-            <div id="listaAlunos" class="list"></div>
-          </div>
-        </section>
-
-        <section class="tab-panel" id="treinosTab">
-          <div class="panel">
-            <h2>Cadastrar treino</h2>
-            <form id="formTreino" class="form-card">
-              <label>
-                Aluno
-                <select id="treinoAluno" required>
-                  <option value="">Selecione o aluno</option>
-                </select>
-              </label>
-              <label>
-                Nome do treino
-                <input
-                  id="nomeTreino"
-                  type="text"
-                  list="listaNomesTreino"
-                  placeholder="Ex: Treino de força"
-                  required
-                />
-              </label>
-              <label>
-                Tipo
-                <input
-                  id="tipoTreino"
-                  type="text"
-                  list="listaTiposTreino"
-                  placeholder="Ex: Hipertrofia, cardio, mobilidade"
-                  required
-                />
-              </label>
-              <label>
-                Data
-                <input id="dataTreino" type="date" required />
-              </label>
-
-              <div class="exercise-header">
-                <strong>Exercícios</strong>
-                <button
-                  type="button"
-                  id="addExercicio"
-                  class="secondary-btn small-btn"
-                >
-                  + Adicionar exercício
-                </button>
-              </div>
-
-              <div id="exerciciosTreino" class="exercise-list"></div>
-
-              <label>
-                Observações gerais
-                <textarea
-                  id="observacaoTreino"
-                  list="listaObservacoesTreino"
-                  placeholder="Descreva orientações do treino"
-                ></textarea>
-              </label>
-
-              <button class="primary-btn" type="submit">Salvar treino</button>
-            </form>
-          </div>
-
-          <div class="panel list-panel">
-            <h2>Treinos cadastrados</h2>
-            <div id="listaTreinos" class="list"></div>
-          </div>
-        </section>
-      </main>
-    </div>
-
-    <datalist id="listaNomesTreino"></datalist>
-    <datalist id="listaTiposTreino"></datalist>
-    <datalist id="listaObservacoesTreino"></datalist>
-    <datalist id="listaExercicios"></datalist>
-    <datalist id="listaSeries"></datalist>
-    <datalist id="listaObservacoesExercicio"></datalist>
-
+      <section class="panel">
+        <h2>Registrar manutenção</h2>
+        <form id="formManutencao" class="form-card">
+          <label>Veículo<select id="veiculoManutencao" required></select></label>
+          <label>Data de entrada<input id="dataManutencao" type="date" required /></label>
+          <label>Descrição do problema<textarea id="descricaoManutencao" required></textarea></label>
+          <label>Tipo de serviço<input id="tipoManutencao" type="text" placeholder="Ex.: Revisão, freios" required /></label>
+          <label>Situação
+            <select id="situacaoManutencao" required>
+              <option value="aguardando">Aguardando</option>
+              <option value="em andamento">Em andamento</option>
+              <option value="concluída">Concluída</option>
+            </select>
+          </label>
+          <label>Valor<input id="valorManutencao" type="number" min="0" step="0.01" required /></label>
+          <label>Data de entrega <span>(preencha quando concluída)</span><input id="dataEntrega" type="date" /></label>
+          <button class="primary-btn" type="submit">Registrar manutenção</button>
+        </form>
+        <p id="mensagem" role="status" aria-live="polite"></p>
+      </section>
+    </main>
     <script src="./script/funcionario-home.js"></script>
   </body>
 </html>

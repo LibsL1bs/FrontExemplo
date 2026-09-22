@@ -100,6 +100,36 @@ textarea {
   gap: 16px;
 }
 
+.form-card label span {
+  color: #607270;
+  font-size: 0.82rem;
+  font-weight: 400;
+}
+
+#formManutencao {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#formManutencao label:nth-child(3),
+#formManutencao button,
+#mensagem {
+  grid-column: 1 / -1;
+}
+
+#mensagem {
+  min-height: 20px;
+  margin: 14px 0 0;
+  font-weight: 700;
+}
+
+.sucesso {
+  color: #1f8f5f;
+}
+
+.erro {
+  color: #b45b35;
+}
+
 label {
   display: grid;
   gap: 6px;
@@ -240,6 +270,10 @@ textarea {
   .exercise-header {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  #formManutencao {
+    grid-template-columns: 1fr;
   }
 }
 
