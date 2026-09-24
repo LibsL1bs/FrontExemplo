@@ -66,11 +66,11 @@ button {
 button:hover {
   background: #174f4a;
 }
-.links {
+.atalhos {
   margin-top: 12px;
   text-align: center;
 }
-.links a {
+.atalhos a {
   color: #236b63;
   font:
     14px Arial,
@@ -107,7 +107,7 @@ button:hover {
   button {
     padding: 8px;
   }
-  .links {
+  .atalhos {
     margin-top: 8px;
   }
 }

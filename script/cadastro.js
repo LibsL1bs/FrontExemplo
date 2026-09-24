@@ -1,4 +1,4 @@
-const api = "http://localhost:3001";
+const urlApi = "http://localhost:3001";
 
 const nome = document.querySelector("#nome_cliente");
 const cpf = document.querySelector("#cpf_cliente");
@@ -6,16 +6,15 @@ const telefone = document.querySelector("#telefone_cliente");
 const endereco = document.querySelector("#endereco_cliente");
 const senha = document.querySelector("#senha_cliente");
 const confirmar = document.querySelector("#confirmar_senha");
-const botao = document.querySelector("#cadastrar");
+const btn = document.querySelector("#cadastrar");
 
-function somenteNumeros(valor) {
+function soNums(valor) {
   return valor.replace(/\D/g, "");
 }
 
-// Valida e envia o cadastro do cliente.
-botao.addEventListener("click", async () => {
+btn.addEventListener("click", async () => {
   const nomeCliente = nome.value.trim();
-  const cpfCliente = somenteNumeros(cpf.value);
+  const cpfCliente = soNums(cpf.value);
   const senhaCliente = senha.value.trim();
   const confirmarSenha = confirmar.value.trim();
 
@@ -28,7 +27,7 @@ botao.addEventListener("click", async () => {
   }
 
   try {
-    const resposta = await fetch(`${api}/clientes`, {
+    const resposta = await fetch(`${urlApi}/clientes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

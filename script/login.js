@@ -1,17 +1,17 @@
-const api = "http://localhost:3001";
+const urlApi = "http://localhost:3001";
 
 // Autentica o funcionário e guarda seus dados para a área restrita.
-document.querySelector("form").addEventListener("submit", async (event) => {
-  event.preventDefault();
+document.querySelector("form").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
 
-  const botao = document.querySelector("#entrar");
+  const btn = document.querySelector("#entrar");
   const nome = document.querySelector("#nome_func").value.trim();
   const senha = document.querySelector("#senha_func").value;
 
-  botao.disabled = true;
+  btn.disabled = true;
 
   try {
-    const resposta = await fetch(`${api}/funcionarios/login`, {
+    const resposta = await fetch(`${urlApi}/funcionarios/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nome, senha }),
@@ -28,6 +28,6 @@ document.querySelector("form").addEventListener("submit", async (event) => {
   } catch {
     alert("Não foi possível conectar ao servidor.");
   } finally {
-    botao.disabled = false;
+    btn.disabled = false;
   }
 });

@@ -1,22 +1,29 @@
-const api = "http://localhost:3001";
-const funcionario = JSON.parse(localStorage.getItem("funcionario") || "null");
+const urlApi = "http://localhost:3001";
+const func = JSON.parse(localStorage.getItem("funcionario") || "null");
 
-if (!funcionario?.func_id) {
+if (!func?.func_id) {
   window.location.href = "./login-funcionario.html";
 }
 
-const $ = (seletor) => document.querySelector(seletor);
-const clientesSelect = $("#clienteConsulta");
-const veiculoHistoricoSelect = $("#veiculoHistorico");
-const veiculoManutencaoSelect = $("#veiculoManutencao");
-const listaVeiculos = $("#listaVeiculos");
-const listaHistorico = $("#listaHistorico");
-const mensagem = $("#mensagem");
+const q = (seletor) => document.querySelector(seletor);
+const selCar = q("#selCar");
+const lstCli = q("#lstCli");
+const lstCar = q("#lstCar");
+const tabMan = q("#tabMan");
+const resumo = q("#resumo");
+const msg = q("#msg");
+const form = q("#formMan");
+const titForm = q("#titForm");
+const btnMan = q("#btnMan");
+const cancMan = q("#cancMan");
 let clientes = [];
-let veiculos = [];
-let manutencoes = [];
+let carros = [];
+let mants = [];
+let cliSel = null;
+let carSel = null;
+let manSel = null;
 
-function situacaoConcluida(valor) {
+function foiConcluida(valor) {
   return valor.trim().toLowerCase().startsWith("conclu");
 }
 
@@ -29,116 +36,197 @@ function escapar(valor) {
     .replaceAll("'", "&#039;");
 }
 
-$("#bemVindo").textContent = `Olá, ${funcionario.nome_func || "funcionário"}`;
+q("#boasVindas").textContent = `Olá, ${func.nome_func || "funcionário"}`;
 
-$("#logout").addEventListener("click", () => {
+q("#sair").addEventListener("click", () => {
   localStorage.removeItem("funcionario");
   window.location.href = "./login-funcionario.html";
 });
 
 function dataBr(data) {
   if (!data) return "Não informada";
-  return new Date(`${data}T00:00:00`).toLocaleDateString("pt-BR");
+  const texto = String(data).split(/[T ]/)[0];
+  const partes = texto.split("-");
+  if (partes.length !== 3) return "Não informada";
+  return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
-function preencherSelect(select, itens, textoVazio, valor, texto) {
+function dataCampo(data) {
+  return data ? String(data).split(/[T ]/)[0] : "";
+}
+
+function montarSel(select, itens, textoVazio, valor, texto) {
   select.innerHTML = itens.length
     ? itens.map((item) => `<option value="${escapar(item[valor])}">${escapar(item[texto])}</option>`).join("")
     : `<option value="">${textoVazio}</option>`;
 }
 
-function renderizarVeiculos() {
-  const clienteId = Number(clientesSelect.value);
-  const itens = veiculos.filter((veiculo) => Number(veiculo.id_cliente) === clienteId);
-  listaVeiculos.innerHTML = itens.length
-    ? itens.map((veiculo) => `
-      <article class="item-card">
-        <h3>${escapar(veiculo.marca_vei)} ${escapar(veiculo.modelo_vei)}</h3>
-        <p><strong>Placa:</strong> ${escapar(veiculo.placa_vei)} | <strong>Ano:</strong> ${escapar(veiculo.ano_vei)}</p>
-        <p><strong>Cor:</strong> ${escapar(veiculo.cor_vei)}</p>
-      </article>`).join("")
-    : '<p class="empty-state">Este cliente não possui veículos cadastrados.</p>';
+function mostrarMants() {
+  const itens = mants.filter((manutencao) => Number(manutencao.id_ver) === Number(carSel));
+  return itens.length
+    ? `<table class="tab-man">
+        <thead><tr><th>Serviço</th><th>Situação</th><th>Entrada</th><th>Valor</th></tr></thead>
+        <tbody>${itens.map((manutencao) => `
+          <tr class="linha-man" data-man="${escapar(manutencao.id_manu)}" tabindex="0">
+            <td><strong>${escapar(manutencao.descri_manu)}</strong><span>${escapar(manutencao.tipo_manu)}</span></td>
+            <td>${escapar(manutencao.situa_manu)}</td>
+            <td>${dataBr(manutencao.data_manu)}</td>
+            <td>R$ ${Number(manutencao.valor_manu).toFixed(2).replace(".", ",")}</td>
+          </tr>`).join("")}</tbody>
+      </table>`
+    : '<p class="vazio">Nenhuma manutenção para este carro.</p>';
 }
 
-function renderizarHistorico() {
-  const veiculoId = Number(veiculoHistoricoSelect.value);
-  const itens = manutencoes.filter((manutencao) => Number(manutencao.id_ver) === veiculoId);
-  listaHistorico.innerHTML = itens.length
-    ? itens.map((manutencao) => `
-      <article class="item-card">
-        <h3>${escapar(manutencao.descri_manu)}</h3>
-        <p><strong>Entrada:</strong> ${dataBr(manutencao.data_manu)} | <strong>Entrega:</strong> ${dataBr(manutencao.datentreg_manu)}</p>
-        <p><strong>Serviço:</strong> ${escapar(manutencao.tipo_manu)} | <strong>Situação:</strong> ${escapar(manutencao.situa_manu)}</p>
-        <p><strong>Valor:</strong> R$ ${Number(manutencao.valor_manu).toFixed(2).replace(".", ",")}</p>
-      </article>`).join("")
-    : '<p class="empty-state">Nenhuma manutenção registrada para este veículo.</p>';
+function mostrarClis() {
+  lstCli.innerHTML = clientes.length
+    ? clientes.map((cliente) => {
+      const selecionado = Number(cliente.id_cliente) === Number(cliSel);
+      return `<button class="item${selecionado ? " sel" : ""}" type="button" data-cli="${escapar(cliente.id_cliente)}">
+        <strong>${escapar(cliente.nome_cliente)}</strong>
+        <span>CPF ${escapar(cliente.cpf_cliente)}</span>
+      </button>`;
+    }).join("")
+    : '<p class="vazio">Nenhum cliente cadastrado.</p>';
+
+  resumo.textContent = `${clientes.length} cliente(s) · ${carros.length} carro(s) · ${mants.length} manutenção(ões)`;
 }
 
-function atualizarVeiculosSelecionaveis() {
-  preencherSelect(veiculoHistoricoSelect, veiculos, "Nenhum veículo cadastrado", "id_ver", "placa_vei");
-  preencherSelect(veiculoManutencaoSelect, veiculos, "Nenhum veículo cadastrado", "id_ver", "placa_vei");
-  renderizarHistorico();
+function mostrarCars() {
+  const lista = carros.filter((carro) => Number(carro.id_cliente) === Number(cliSel));
+  lstCar.innerHTML = lista.length
+    ? lista.map((carro) => `
+      <button class="item${Number(carro.id_ver) === Number(carSel) ? " sel" : ""}" type="button" data-car="${escapar(carro.id_ver)}">
+        <strong>${escapar(carro.marca_vei)} ${escapar(carro.modelo_vei)}</strong>
+        <span>${escapar(carro.placa_vei)} · ${escapar(carro.ano_vei)} · ${escapar(carro.cor_vei)}</span>
+      </button>`).join("")
+    : '<p class="vazio">Este cliente não possui carros.</p>';
 }
 
-async function carregarDados() {
+function mostrarTabMan() {
+  tabMan.innerHTML = carSel ? mostrarMants() : '<p class="vazio">Selecione um carro.</p>';
+}
+
+lstCli.addEventListener("click", (evento) => {
+  const item = evento.target.closest("[data-cli]");
+  if (!item) return;
+  cliSel = item.dataset.cli;
+  carSel = null;
+  mostrarClis();
+  mostrarCars();
+  mostrarTabMan();
+});
+
+lstCar.addEventListener("click", (evento) => {
+  const item = evento.target.closest("[data-car]");
+  if (!item) return;
+  carSel = item.dataset.car;
+  mostrarCars();
+  mostrarTabMan();
+});
+
+function editarMan(id) {
+  const manutencao = mants.find((item) => Number(item.id_manu) === Number(id));
+  if (!manutencao) return;
+
+  manSel = manutencao.id_manu;
+  selCar.value = manutencao.id_ver;
+  q("#dtEnt").value = dataCampo(manutencao.data_manu);
+  q("#descMan").value = manutencao.descri_manu || "";
+  q("#tipoMan").value = manutencao.tipo_manu || "";
+  q("#sitMan").value = manutencao.situa_manu || "aguardando";
+  q("#vlrMan").value = manutencao.valor_manu ?? "";
+  q("#dtSai").value = dataCampo(manutencao.datentreg_manu);
+  titForm.textContent = "Editar manutenção";
+  btnMan.textContent = "Salvar alteração";
+  cancMan.hidden = false;
+  form.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+tabMan.addEventListener("click", (evento) => {
+  const item = evento.target.closest("[data-man]");
+  if (item) editarMan(item.dataset.man);
+});
+
+tabMan.addEventListener("keydown", (evento) => {
+  if (evento.key !== "Enter" && evento.key !== " ") return;
+  const item = evento.target.closest("[data-man]");
+  if (!item) return;
+  evento.preventDefault();
+  editarMan(item.dataset.man);
+});
+
+function cancelarEdicao() {
+  manSel = null;
+  form.reset();
+  titForm.textContent = "Registrar manutenção";
+  btnMan.textContent = "Registrar manutenção";
+  cancMan.hidden = true;
+}
+
+cancMan.addEventListener("click", cancelarEdicao);
+
+function atualizarCars() {
+  montarSel(selCar, carros, "Nenhum veículo cadastrado", "id_ver", "placa_vei");
+}
+
+async function carregar() {
   try {
     const respostas = await Promise.all([
-      fetch(`${api}/clientes`),
-      fetch(`${api}/veiculos`),
-      fetch(`${api}/manutencoes`),
+      fetch(`${urlApi}/clientes`),
+      fetch(`${urlApi}/veiculos`),
+      fetch(`${urlApi}/manutencoes`),
     ]);
     if (respostas.some((resposta) => !resposta.ok)) throw new Error("Falha ao consultar a API.");
 
-    [clientes, veiculos, manutencoes] = await Promise.all(respostas.map((resposta) => resposta.json()));
-    preencherSelect(clientesSelect, clientes, "Nenhum cliente cadastrado", "id_cliente", "nome_cliente");
-    atualizarVeiculosSelecionaveis();
-    renderizarVeiculos();
+    [clientes, carros, mants] = await Promise.all(respostas.map((resposta) => resposta.json()));
+    atualizarCars();
+    mostrarClis();
+    mostrarCars();
+    mostrarTabMan();
   } catch (erro) {
-    mensagem.textContent = erro.message;
-    mensagem.className = "erro";
+    msg.textContent = erro.message;
+    msg.className = "erro";
   }
 }
 
-clientesSelect.addEventListener("change", renderizarVeiculos);
-veiculoHistoricoSelect.addEventListener("change", renderizarHistorico);
-
-$("#formManutencao").addEventListener("submit", async (evento) => {
+q("#formMan").addEventListener("submit", async (evento) => {
   evento.preventDefault();
-  const situacao = $("#situacaoManutencao").value;
-  const dataEntrega = $("#dataEntrega").value || null;
+  const situacao = q("#sitMan").value;
+  const dataEntrega = q("#dtSai").value || null;
 
-  if (situacaoConcluida(situacao) && !dataEntrega) {
-    mensagem.textContent = "Informe a data de entrega para uma manutenção concluída.";
-    mensagem.className = "erro";
+  if (foiConcluida(situacao) && !dataEntrega) {
+    msg.textContent = "Informe a data de entrega para uma manutenção concluída.";
+    msg.className = "erro";
     return;
   }
 
   const dados = {
-    data: $("#dataManutencao").value,
-    descricao: $("#descricaoManutencao").value.trim(),
-    tipo: $("#tipoManutencao").value.trim(),
+    data: q("#dtEnt").value,
+    descricao: q("#descMan").value.trim(),
+    tipo: q("#tipoMan").value.trim(),
     situacao,
     dataEntrega,
-    valor: Number($("#valorManutencao").value),
-    idVeiculo: Number(veiculoManutencaoSelect.value),
+    valor: Number(q("#vlrMan").value),
+    idVeiculo: Number(selCar.value),
   };
 
   try {
-    const resposta = await fetch(`${api}/manutencoes`, {
-      method: "POST",
+    const rota = manSel ? `${urlApi}/manutencoes/${manSel}` : `${urlApi}/manutencoes`;
+    const resposta = await fetch(rota, {
+      method: manSel ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(dados),
     });
     const resultado = await resposta.json().catch(() => ({}));
     if (!resposta.ok) throw new Error(resultado.mensagem || "Não foi possível registrar a manutenção.");
-    mensagem.textContent = "Manutenção registrada com sucesso.";
-    mensagem.className = "sucesso";
-    $("#formManutencao").reset();
-    await carregarDados();
+    msg.textContent = "Manutenção registrada com sucesso.";
+    msg.className = "sucesso";
+    cancelarEdicao();
+    await carregar();
   } catch (erro) {
-    mensagem.textContent = erro.message;
-    mensagem.className = "erro";
+    msg.textContent = erro.message;
+    msg.className = "erro";
   }
 });
 
-carregarDados();
+carregar();

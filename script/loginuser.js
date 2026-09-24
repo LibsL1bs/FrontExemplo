@@ -1,55 +1,46 @@
-const api = "http://localhost:3001";
+const urlApi = "http://localhost:3001";
 
-const formulario = document.querySelector("#loginCliente");
-const botao = document.querySelector("#entrar");
-const mensagem = document.querySelector("#mensagem");
+const form = document.querySelector("#loginCliente");
+const btn = document.querySelector("#entrar");
+const msg = document.querySelector("#mensagem");
 
-function somenteNumeros(valor) {
+function soNums(valor) {
   return valor.replace(/\D/g, "");
 }
 
-function campo(cliente, ...nomes) {
-  const chave = Object.keys(cliente).find((item) =>
-    nomes.some((nome) => item.toLowerCase() === nome.toLowerCase()),
-  );
-
-  return chave ? cliente[chave] : "";
-}
-
-// Autentica o cliente pela rota de login da API.
-formulario.addEventListener("submit", async (event) => {
-  event.preventDefault();
+form.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
 
   const nome = document.querySelector("#nome_cliente").value.trim();
-  const cpf = somenteNumeros(document.querySelector("#cpf_cliente").value);
+  const cpf = soNums(document.querySelector("#cpf_cliente").value);
   const senha = document.querySelector("#senha_cliente").value;
 
-  mensagem.textContent = "Entrando...";
-  mensagem.className = "carregando";
-  botao.disabled = true;
+  msg.textContent = "Entrando...";
+  msg.className = "carregando";
+  btn.disabled = true;
 
   try {
-    const resposta = await fetch(`${api}/clientes/login`, {
+    const resposta = await fetch(`${urlApi}/clientes/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nome, cpf, senha }),
     });
 
     if (!resposta.ok) {
-      mensagem.textContent = "Nome, CPF ou senha incorretos.";
-      mensagem.className = "erro";
+      msg.textContent = "Nome, CPF ou senha incorretos.";
+      msg.className = "erro";
       return;
     }
 
     const cliente = await resposta.json();
     localStorage.setItem("cliente", JSON.stringify(cliente));
-    mensagem.textContent = `Cadastro encontrado, ${campo(cliente, "Nome_cliente", "nome")}.`;
-    mensagem.className = "sucesso";
+    msg.textContent = `Cadastro encontrado, ${cliente.nome_cliente}.`;
+    msg.className = "sucesso";
     window.location.href = "./homeuser.html";
   } catch {
-    mensagem.textContent = "Não foi possível conectar ao servidor.";
-    mensagem.className = "erro";
+    msg.textContent = "Não foi possível conectar ao servidor.";
+    msg.className = "erro";
   } finally {
-    botao.disabled = false;
+    btn.disabled = false;
   }
 });

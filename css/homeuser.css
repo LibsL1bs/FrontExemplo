@@ -1,141 +1,120 @@
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
   min-height: 100vh;
-  background: #eef4f3;
-  color: #18302f;
+  background: #f3efe6;
+  color: #202a2a;
   font-family: Arial, sans-serif;
 }
-.container {
-  width: min(900px, 90vw);
-  margin: 40px auto;
+
+button, input { font: inherit; }
+
+.cont {
+  width: min(980px, 92vw);
+  margin: 48px auto;
 }
+
 header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 24px;
+  padding-bottom: 22px;
+  border-bottom: 2px solid #202a2a;
 }
-.eyebrow {
-  display: block;
-  color: #5a6b6a;
-  font-size: 12px;
+
+.rotulo {
+  color: #d66b45;
+  font-size: 0.75rem;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-h1 {
-  margin: 6px 0 0;
-  font-size: 32px;
-}
-#logout {
-  border: none;
-  border-radius: 8px;
-  background: #236b63;
+
+h1 { margin: 6px 0 0; font: 2rem Georgia, serif; }
+h2 { margin: 0 0 16px; }
+
+#sair {
+  padding: 10px 16px;
+  border: 0;
+  background: #d66b45;
   color: #fff;
   cursor: pointer;
   font-weight: 700;
 }
-#logout {
-  padding: 10px 16px;
-}
-.panel {
-  background: #fff;
-  border: 1px solid #d7e4e1;
-  border-radius: 12px;
+
+.painel {
+  margin-top: 24px;
   padding: 24px;
-  box-shadow: 0 12px 30px rgba(24, 48, 47, 0.08);
+  background: #fff;
+  box-shadow: 8px 8px 0 #d9e2db;
 }
-.intro {
-  margin: -8px 0 22px;
-  color: #617371;
-}
-#veiculoForm {
+
+.sub { margin: -8px 0 22px; color: #617371; }
+
+#formCar {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
-#veiculoForm label {
+
+#formCar label {
   display: grid;
   gap: 7px;
-  color: #202a2a;
-  font-size: 14px;
   font-weight: 700;
 }
-#veiculoForm input {
+
+#formCar input {
   width: 100%;
   padding: 12px;
   border: 1px solid #aab6ae;
-  border-radius: 0;
-  background: #fff;
-  font: 16px Arial, sans-serif;
 }
-#veiculoForm input:focus {
-  outline: 2px solid #236b63;
-  border-color: #236b63;
-}
-#cadastrarVeiculo {
+
+#cadastrarCar,
+.btn-pri {
   grid-column: 1 / -1;
   padding: 13px;
   border: 0;
-  border-radius: 0;
   background: #236b63;
   color: #fff;
   cursor: pointer;
-  font: 700 15px Arial, sans-serif;
-}
-#cadastrarVeiculo:hover {
-  background: #174f4a;
-}
-#cadastrarVeiculo:disabled {
-  opacity: 0.65;
-  cursor: wait;
-}
-#mensagem {
-  grid-column: 1 / -1;
-  min-height: 20px;
-  margin: 0;
-  font: 700 14px Arial, sans-serif;
-}
-#mensagem.carregando { color: #65706c; }
-#mensagem.sucesso { color: #236b63; }
-#mensagem.erro { color: #b34d35; }
-@media (max-width: 600px) {
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  #veiculoForm {
-    grid-template-columns: 1fr;
-  }
-}
-
-body {
-  background: #f3efe6;
-  color: #202a2a;
-}
-.container {
-  max-width: 980px;
-  margin-top: 48px;
-}
-header {
-  padding-bottom: 22px;
-  border-bottom: 2px solid #202a2a;
-}
-.eyebrow {
-  color: #d66b45;
   font-weight: 700;
 }
-h1 {
-  font-family: Georgia, serif;
+
+#msg { grid-column: 1 / -1; min-height: 20px; margin: 0; font-weight: 700; }
+.carregando { color: #65706c; }
+.sucesso { color: #236b63; }
+.erro { color: #b34d35; }
+
+.cab-garagem {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
 }
-#logout {
-  border-radius: 0;
-  background: #d66b45;
+
+.cab-garagem h2 { margin: 6px 0 0; }
+.total-car { color: #236b63; font-weight: 700; }
+.lista-car { display: grid; gap: 10px; }
+
+.item-car {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border-left: 4px solid #236b63;
+  background: #f8fbf7;
 }
-.panel {
-  border-radius: 0;
-  box-shadow: 8px 8px 0 #d9e2db;
+
+.item-car div { display: grid; gap: 5px; }
+.item-car span { color: #65706c; font-size: 0.9rem; }
+.cor-car { color: #d66b45 !important; font-weight: 700; }
+.vazio { margin: 0; padding: 14px; border: 1px dashed #b9c4bc; color: #65706c; }
+
+@media (max-width: 600px) {
+  .cont { margin-top: 24px; }
+  header, .cab-garagem, .item-car { align-items: flex-start; flex-direction: column; }
+  #formCar { grid-template-columns: 1fr; }
 }

@@ -7,49 +7,77 @@
     <link rel="stylesheet" href="./css/funcionario-home.css" />
   </head>
   <body>
-    <main class="page">
-      <header class="topbar">
+    <main class="pagina">
+      <header class="barra">
         <div>
-          <span class="eyebrow">Gestão da oficina</span>
-          <h1 id="titulo">Área do funcionário</h1>
-          <p id="bemVindo">Olá, funcionário.</p>
+          <span class="rotulo">Gestão da oficina</span>
+          <h1>Área do funcionário</h1>
+          <p id="boasVindas">Olá, funcionário.</p>
         </div>
-        <button id="logout" type="button">Sair</button>
+        <button id="sair" type="button">Sair</button>
       </header>
 
-      <section class="panel">
-        <h2>Veículos por cliente</h2>
-        <label for="clienteConsulta">Cliente</label>
-        <select id="clienteConsulta"></select>
-        <div id="listaVeiculos" class="list"></div>
+      <section class="painel">
+        <div class="cabecalho">
+          <div>
+            <span class="rotulo">Visão geral</span>
+            <h2>Clientes, carros e manutenções</h2>
+          </div>
+          <p id="resumo" class="resumo">Carregando dados...</p>
+        </div>
+        <div class="area-trab">
+          <aside class="lateral">
+            <h3>Clientes</h3>
+            <div id="lstCli" class="lista"></div>
+          </aside>
+          <div class="area-detalhes">
+            <section class="sec-detalhes">
+              <div class="cab-detalhes">
+                <div>
+                  <span class="rotulo">Veículos</span>
+                  <h3>Carros do cliente</h3>
+                </div>
+                <span class="dica">Selecione um carro para consultar o histórico</span>
+              </div>
+              <div id="lstCar" class="lista">
+                <p class="vazio">Selecione um cliente.</p>
+              </div>
+            </section>
+            <section class="sec-detalhes sec-man">
+              <div class="cab-detalhes">
+                <div>
+                  <span class="rotulo">Histórico</span>
+                  <h3>Manutenções</h3>
+                </div>
+              </div>
+              <div id="tabMan" class="tab-wrap">
+                <p class="vazio">Selecione um carro.</p>
+              </div>
+            </section>
+          </div>
+        </div>
       </section>
 
-      <section class="panel">
-        <h2>Histórico de manutenções</h2>
-        <label for="veiculoHistorico">Veículo</label>
-        <select id="veiculoHistorico"></select>
-        <div id="listaHistorico" class="list"></div>
-      </section>
-
-      <section class="panel">
-        <h2>Registrar manutenção</h2>
-        <form id="formManutencao" class="form-card">
-          <label>Veículo<select id="veiculoManutencao" required></select></label>
-          <label>Data de entrada<input id="dataManutencao" type="date" required /></label>
-          <label>Descrição do problema<textarea id="descricaoManutencao" required></textarea></label>
-          <label>Tipo de serviço<input id="tipoManutencao" type="text" placeholder="Ex.: Revisão, freios" required /></label>
+      <section class="painel">
+        <h2 id="titForm">Registrar manutenção</h2>
+        <form id="formMan" class="form">
+          <label>Veículo<select id="selCar" required></select></label>
+          <label>Data de entrada<input id="dtEnt" type="date" required /></label>
+          <label>Descrição do problema<textarea id="descMan" required></textarea></label>
+          <label>Tipo de serviço<input id="tipoMan" type="text" placeholder="Ex.: Revisão, freios" required /></label>
           <label>Situação
-            <select id="situacaoManutencao" required>
+            <select id="sitMan" required>
               <option value="aguardando">Aguardando</option>
               <option value="em andamento">Em andamento</option>
               <option value="concluída">Concluída</option>
             </select>
           </label>
-          <label>Valor<input id="valorManutencao" type="number" min="0" step="0.01" required /></label>
-          <label>Data de entrega <span>(preencha quando concluída)</span><input id="dataEntrega" type="date" /></label>
-          <button class="primary-btn" type="submit">Registrar manutenção</button>
+          <label>Valor<input id="vlrMan" type="number" min="0" step="0.01" required /></label>
+          <label>Data de entrega <span>(preencha quando concluída)</span><input id="dtSai" type="date" /></label>
+          <button id="btnMan" class="btn-pri" type="submit">Registrar manutenção</button>
+          <button id="cancMan" class="btn-sec" type="button" hidden>Cancelar edição</button>
         </form>
-        <p id="mensagem" role="status" aria-live="polite"></p>
+        <p id="msg" role="status" aria-live="polite"></p>
       </section>
     </main>
     <script src="./script/funcionario-home.js"></script>

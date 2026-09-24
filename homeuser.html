@@ -7,19 +7,19 @@
     <link rel="stylesheet" href="./css/homeuser.css" />
   </head>
   <body>
-    <main class="container">
+    <main class="cont">
       <header>
         <div>
-          <span class="eyebrow">Área do cliente</span>
+          <span class="rotulo">Área do cliente</span>
           <h1 id="titulo">Cadastrar veículo</h1>
         </div>
-        <button id="logout" type="button">Sair</button>
+        <button id="sair" type="button">Sair</button>
       </header>
 
-      <section class="panel">
+      <section class="painel">
         <h2>Novo veículo</h2>
-        <p class="intro">Informe os dados do veículo para vinculá-lo ao seu cadastro.</p>
-        <form id="veiculoForm">
+        <p class="sub">Informe os dados do veículo para vinculá-lo ao seu cadastro.</p>
+        <form id="formCar">
           <label for="placa">Placa
             <input id="placa" name="placa" type="text" maxlength="10" placeholder="ABC1D23" required />
           </label>
@@ -35,9 +35,20 @@
           <label for="cor">Cor
             <input id="cor" name="cor" type="text" placeholder="Prata" required />
           </label>
-          <button id="cadastrarVeiculo" type="submit">Cadastrar veículo</button>
-          <p id="mensagem" role="status" aria-live="polite"></p>
+          <button id="cadastrarCar" type="submit">Cadastrar veículo</button>
+          <p id="msg" role="status" aria-live="polite"></p>
         </form>
+      </section>
+
+      <section class="painel garagem">
+        <div class="cab-garagem">
+          <div>
+            <span class="rotulo">Sua garagem</span>
+            <h2>Veículos cadastrados</h2>
+          </div>
+          <span id="totalCar" class="total-car">Carregando...</span>
+        </div>
+        <div id="lstCar" class="lista-car" aria-live="polite"></div>
       </section>
     </main>
 
