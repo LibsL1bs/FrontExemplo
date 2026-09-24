@@ -5,17 +5,16 @@ if (!func?.func_id) {
   window.location.href = "./login-funcionario.html";
 }
 
-const q = (seletor) => document.querySelector(seletor);
-const selCar = q("#selCar");
-const lstCli = q("#lstCli");
-const lstCar = q("#lstCar");
-const tabMan = q("#tabMan");
-const resumo = q("#resumo");
-const msg = q("#msg");
-const form = q("#formMan");
-const titForm = q("#titForm");
-const btnMan = q("#btnMan");
-const cancMan = q("#cancMan");
+const selCar = document.querySelector("#selCar");
+const lstCli = document.querySelector("#lstCli");
+const lstCar = document.querySelector("#lstCar");
+const tabMan = document.querySelector("#tabMan");
+const resumo = document.querySelector("#resumo");
+const msg = document.querySelector("#msg");
+const form = document.querySelector("#formMan");
+const titForm = document.querySelector("#titForm");
+const btnMan = document.querySelector("#btnMan");
+const cancMan = document.querySelector("#cancMan");
 let clientes = [];
 let carros = [];
 let mants = [];
@@ -36,9 +35,9 @@ function escapar(valor) {
     .replaceAll("'", "&#039;");
 }
 
-q("#boasVindas").textContent = `Olá, ${func.nome_func || "funcionário"}`;
+document.querySelector("#boasVindas").textContent = `Olá, ${func.nome_func || "funcionário"}`;
 
-q("#sair").addEventListener("click", () => {
+document.querySelector("#sair").addEventListener("click", () => {
   localStorage.removeItem("funcionario");
   window.location.href = "./login-funcionario.html";
 });
@@ -130,12 +129,12 @@ function editarMan(id) {
 
   manSel = manutencao.id_manu;
   selCar.value = manutencao.id_ver;
-  q("#dtEnt").value = dataCampo(manutencao.data_manu);
-  q("#descMan").value = manutencao.descri_manu || "";
-  q("#tipoMan").value = manutencao.tipo_manu || "";
-  q("#sitMan").value = manutencao.situa_manu || "aguardando";
-  q("#vlrMan").value = manutencao.valor_manu ?? "";
-  q("#dtSai").value = dataCampo(manutencao.datentreg_manu);
+  document.querySelector("#dtEnt").value = dataCampo(manutencao.data_manu);
+  document.querySelector("#descMan").value = manutencao.descri_manu || "";
+  document.querySelector("#tipoMan").value = manutencao.tipo_manu || "";
+  document.querySelector("#sitMan").value = manutencao.situa_manu || "aguardando";
+  document.querySelector("#vlrMan").value = manutencao.valor_manu ?? "";
+  document.querySelector("#dtSai").value = dataCampo(manutencao.datentreg_manu);
   titForm.textContent = "Editar manutenção";
   btnMan.textContent = "Salvar alteração";
   cancMan.hidden = false;
@@ -189,10 +188,10 @@ async function carregar() {
   }
 }
 
-q("#formMan").addEventListener("submit", async (evento) => {
+document.querySelector("#formMan").addEventListener("submit", async (evento) => {
   evento.preventDefault();
-  const situacao = q("#sitMan").value;
-  const dataEntrega = q("#dtSai").value || null;
+  const situacao = document.querySelector("#sitMan").value;
+  const dataEntrega = document.querySelector("#dtSai").value || null;
 
   if (foiConcluida(situacao) && !dataEntrega) {
     msg.textContent = "Informe a data de entrega para uma manutenção concluída.";
@@ -201,12 +200,12 @@ q("#formMan").addEventListener("submit", async (evento) => {
   }
 
   const dados = {
-    data: q("#dtEnt").value,
-    descricao: q("#descMan").value.trim(),
-    tipo: q("#tipoMan").value.trim(),
+    data: document.querySelector("#dtEnt").value,
+    descricao: document.querySelector("#descMan").value.trim(),
+    tipo: document.querySelector("#tipoMan").value.trim(),
     situacao,
     dataEntrega,
-    valor: Number(q("#vlrMan").value),
+    valor: Number(document.querySelector("#vlrMan").value),
     idVeiculo: Number(selCar.value),
   };
 
